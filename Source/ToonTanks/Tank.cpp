@@ -23,6 +23,33 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) // 
     PlayerInputComponent->BindAxis(TEXT("Turn"), this, &ATank::Turn); // Bind the Turn function to the "Turn" axis input
 }
 
+// Called every frame
+void ATank::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if(PlayerControllerRef)// Check if the PlayerControllerRef is valid
+    {
+        FHitResult HitResult;
+        PlayerControllerRef->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, // Use the visibility channel to check for hits under the cursor
+            false, // Whether to trace complex collision
+            HitResult); // Get the hit result under the cursor
+        RotateTurret(HitResult.ImpactPoint); // Rotate the turret towards the impact point of the hit result
+    }
+
+}
+
+// Called when the game starts or when spawned
+void ATank::BeginPlay()
+{
+	Super::BeginPlay();
+
+    PlayerControllerRef = Cast<APlayerController>(GetController()); // Get a reference to the player controller 
+
+    
+   
+}
+
 void ATank::Move(float Value) // Function to handle movement input
 {
     FVector DeltaLocation = FVector::ZeroVector; 
