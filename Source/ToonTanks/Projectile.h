@@ -22,6 +22,12 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	class UStaticMeshComponent* ProjectileMesh; // Mesh component for the projectile
+
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
+	class UProjectileMovementComponent* ProjectileMovementComponent; // Movement component for the projectile
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	
 public:	
 	// Called every frame
