@@ -30,10 +30,10 @@ void ATank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(PlayerControllerRef)// Check if the PlayerControllerRef is valid
+	if(TankPlayerController)// Check if the PlayerControllerRef is valid
     {
         FHitResult HitResult;
-        PlayerControllerRef->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, // Use the visibility channel to check for hits under the cursor
+        TankPlayerController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, // Use the visibility channel to check for hits under the cursor
             false, // Whether to trace complex collision
             HitResult); // Get the hit result under the cursor
         RotateTurret(HitResult.ImpactPoint); // Rotate the turret towards the impact point of the hit result
@@ -41,12 +41,19 @@ void ATank::Tick(float DeltaTime)
 
 }
 
+void ATank::HandleDestruction()
+{
+    Super::HandleDestruction(); // Call the base class HandleDestruction function
+    SetActorHiddenInGame(true); // Hide the actor in the game
+    SetActorTickEnabled(false); // Disable ticking for this actor
+}
+
 // Called when the game starts or when spawned
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 
-    PlayerControllerRef = Cast<APlayerController>(GetController()); // Get a reference to the player controller 
+    TankPlayerController = Cast<APlayerController>(GetController()); // Get a reference to the player controller 
 
     
    

@@ -24,6 +24,10 @@ ABasePawn::ABasePawn()
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Spawn Point"));
 	ProjectileSpawnPoint->SetupAttachment(TurretMesh);
 }
+void ABasePawn::HandleDestruction()
+{
+	// TODO: VISUAL & SOUND EFFECTS
+}
 
 void ABasePawn::RotateTurret(FVector LookAtTarget)
 {
@@ -41,11 +45,12 @@ void ABasePawn::Fire()
 {
 	FVector Location = ProjectileSpawnPoint->GetComponentLocation(); 
 	FRotator Rotation = ProjectileSpawnPoint->GetComponentRotation();
-	GetWorld()->SpawnActor<AProjectile>( // Spawn a projectile at the spawn point
+	auto Projectile = GetWorld()->SpawnActor<AProjectile>( // Spawn a projectile at the spawn point
 		ProjectileClass, 
 		Location, 
 		Rotation
 	);
+	Projectile->SetOwner(this); 
 }
 
 

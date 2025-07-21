@@ -15,6 +15,13 @@ void ATower::Tick(float DeltaTime)
         RotateTurret(Tank->GetActorLocation()); 
     }
 }
+
+void ATower::HandleDestruction()
+{
+    Super::HandleDestruction(); // Call the base class destruction
+    Destroy();
+}
+
 void ATower::BeginPlay()
 {
     Super::BeginPlay();
