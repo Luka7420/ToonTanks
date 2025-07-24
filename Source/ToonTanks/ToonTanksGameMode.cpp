@@ -5,16 +5,16 @@
 #include "kismet/GameplayStatics.h"
 #include "Tank.h" // Include the Tank class header to access its functionality
 #include "Tower.h"
+#include "ToonTanksPlayerController.h"
 
 void AToonTanksGameMode::ActorDied(AActor* DeadActor)
 {
    if(DeadActor == Tank)
    {
       Tank->HandleDestruction(); // Call the HandleDestruction method on the Tank instance
-      if(Tank->GetTankPlayerController())
+      if(ToonTanksPlayerController)
       {
-         Tank->DisableInput(Tank->GetTankPlayerController()); // Disable input for the player controller associated with the tank
-         Tank->GetTankPlayerController()->bShowMouseCursor = false; // Hide the mouse cursor for the player controller
+         ToonTanksPlayerController->SetPlayerEnabledState(false); // Disable player input through the player controller
       }
    }
    else if(ATower* DestroyedTower = Cast<ATower>(DeadActor)) // Check if the DeadActor is a Tower
@@ -29,4 +29,5 @@ void AToonTanksGameMode::BeginPlay()
     Super::BeginPlay();
 
     Tank = Cast<ATank>(UGameplayStatics::GetPlayerPawn(this, 0)); // Get the player pawn and cast it to ATank
+    ToonTanksPlayerController = Cast<AToonTanksPlayerController>(UGameplayStatics::GetPlayerController(this, 0)); // Get the player controller and cast it to AToonTanksPlayerController
 }

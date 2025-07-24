@@ -25,6 +25,6 @@ protected:
 
 private:
 
-	class ATank *Tank;
-	
+	class ATank *Tank; // Pointer to the tank controlled by the player
+	class AToonTanksPlayerController *ToonTanksPlayerController; // Pointer to the player controller associated with the tank
 };
