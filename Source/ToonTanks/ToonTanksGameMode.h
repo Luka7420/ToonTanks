@@ -22,9 +22,22 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartGame();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void GameOver(bool bWonGame);
+	
 
 private:
 
 	class ATank *Tank; // Pointer to the tank controlled by the player
 	class AToonTanksPlayerController *ToonTanksPlayerController; // Pointer to the player controller associated with the tank
+
+	float StartDelay = 3.f; // Delay before the game starts
+
+	void HandleGameStart(); 
+
+	int32 TargetTowers = 0; 
+	int32 GetTargetTowerCount();
 };
