@@ -6,6 +6,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GameFramework/DamageType.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -19,6 +20,11 @@ AProjectile::AProjectile()
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement Component")); // Create a projectile movement component
 	ProjectileMovementComponent->MaxSpeed = 1300.f; 
 	ProjectileMovementComponent->InitialSpeed = 1300.f; 
+
+	//Particle system component for the projectile launch, attached to the root component
+	TrailParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Smoke Trail"));
+	TrailParticles->SetupAttachment(RootComponent); 
+	
 }
 
 // Called when the game starts or when spawned
@@ -27,6 +33,10 @@ void AProjectile::BeginPlay()
 	Super::BeginPlay();
 	
 	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit); // Bind the OnHit function to the OnComponentHit event
+	if(LaunchSound) 
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, GetActorLocation(), 1.0, 0.5); // Play the launch sound at the projectile's location
+	}
 }
 
 // Called every frame
@@ -38,7 +48,11 @@ void AProjectile::Tick(float DeltaTime)
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	auto MyOwner = GetOwner(); // Get the owner of the projectile
-	if(MyOwner == nullptr) return; 
+	if(MyOwner == nullptr) 
+	{
+		Destroy();
+		return;
+	} 
 
 	auto MyOwnerInsitgator = MyOwner->GetInstigatorController(); // Check if the owner has an instigator controller
 	auto DamageTypeClass = UDamageType::StaticClass(); // Get the damage type class
@@ -46,7 +60,14 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	if(OtherActor && OtherActor != this && OtherActor != MyOwner) // Ensure the other actor is valid and not the projectile or its owner
 	{
 		UGameplayStatics::ApplyDamage(OtherActor, Damage, MyOwnerInsitgator, this, DamageTypeClass); // Apply damage to the other actor
-		Destroy(); // Destroy the projectile after applying damage
+		if(HitParticles) 
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(this, HitParticles, GetActorLocation(), GetActorRotation()); // Spawn hit particles at the projectile's location	
+		}
+		if(HitSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation()); // Play hit sound at the projectile's location
+		}
 	}
-	
+	Destroy(); // Destroy the projectile after applying damage
 }
