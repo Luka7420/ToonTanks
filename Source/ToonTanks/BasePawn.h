@@ -43,4 +43,15 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	class USoundBase* DeathSound;
+
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* TurretRotationSound;
+
+	UPROPERTY(VisibleAnywhere, Category = "Audio")
+	UAudioComponent* TurretAudioComponent;
+
+	FRotator LastTurretRotation;
+	
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TSubclassOf<class UCameraShakeBase> DeathCameraShakeClass;
 };

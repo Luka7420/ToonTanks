@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
+
 // Sets default values
 AProjectile::AProjectile()
 {
@@ -47,15 +48,15 @@ void AProjectile::Tick(float DeltaTime)
 }
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	auto MyOwner = GetOwner(); // Get the owner of the projectile
+	AActor* MyOwner = GetOwner(); // Get the owner of the projectile
 	if(MyOwner == nullptr) 
 	{
 		Destroy();
 		return;
 	} 
 
-	auto MyOwnerInsitgator = MyOwner->GetInstigatorController(); // Check if the owner has an instigator controller
-	auto DamageTypeClass = UDamageType::StaticClass(); // Get the damage type class
+	AController* MyOwnerInsitgator = MyOwner->GetInstigatorController(); // Check if the owner has an instigator controller
+	UClass* DamageTypeClass = UDamageType::StaticClass(); // Get the damage type class
 
 	if(OtherActor && OtherActor != this && OtherActor != MyOwner) // Ensure the other actor is valid and not the projectile or its owner
 	{
@@ -67,6 +68,10 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		if(HitSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation()); // Play hit sound at the projectile's location
+		}
+		if(HitCameraShakeClass)
+		{
+			GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass); // Start camera shake effect for the player controller
 		}
 	}
 	Destroy(); // Destroy the projectile after applying damage

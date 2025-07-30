@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 
 ATank::ATank()
 {
@@ -13,6 +14,10 @@ ATank::ATank()
 
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     Camera->SetupAttachment(SpringArm);
+
+    MovementAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Movement Audio Component"));
+    MovementAudioComponent->SetupAttachment(RootComponent);
+    MovementAudioComponent->bAutoActivate = false; // Don't play on start
 }
 
 void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) // Function to set up player input bindings
@@ -46,6 +51,7 @@ void ATank::HandleDestruction()
     Super::HandleDestruction(); // Call the base class HandleDestruction function
     SetActorHiddenInGame(true); // Hide the actor in the game
     SetActorTickEnabled(false); // Disable ticking for this actor
+    bAlive = false; // Set the alive flag to false
 }
 
 // Called when the game starts or when spawned
@@ -65,6 +71,23 @@ void ATank::Move(float Value) // Function to handle movement input
     // X = Value * DeltaTime * Speed;
     DeltaLocation.X = Value * Speed * UGameplayStatics::GetWorldDeltaSeconds(this); // Calculate the change in location based on input value, speed, and delta time
     AddActorLocalOffset(DeltaLocation, true);   
+
+     // Sound logic
+    if (FMath::Abs(Value) > KINDA_SMALL_NUMBER) // Tank is moving
+    {
+        if (!MovementAudioComponent->IsPlaying() && MovementSound)
+        {
+            MovementAudioComponent->SetSound(MovementSound);
+            MovementAudioComponent->Play();
+        }
+    }
+    else // Tank stopped
+    {
+        if (MovementAudioComponent->IsPlaying())
+        {
+            MovementAudioComponent->FadeOut(0.5f, 0.0f);
+        }
+    }
 }
 
 void ATank::Turn(float Value) 

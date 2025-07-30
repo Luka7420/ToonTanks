@@ -24,6 +24,8 @@ ABasePawn::ABasePawn()
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Spawn Point"));
 	ProjectileSpawnPoint->SetupAttachment(TurretMesh);
+
+	
 }
 void ABasePawn::HandleDestruction()
 {
@@ -35,6 +37,10 @@ void ABasePawn::HandleDestruction()
 	if(DeathSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation()); // Play death sound at the pawn's location
+	}
+	if(DeathCameraShakeClass) // Check if the DeathCameraShakeClass is set
+	{
+		GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(DeathCameraShakeClass); // Start camera shake effect for the player controller
 	}
 }
 
@@ -54,7 +60,8 @@ void ABasePawn::Fire()
 {
 	FVector Location = ProjectileSpawnPoint->GetComponentLocation(); 
 	FRotator Rotation = ProjectileSpawnPoint->GetComponentRotation();
-	auto Projectile = GetWorld()->SpawnActor<AProjectile>( // Spawn a projectile at the spawn point
+
+	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>( // Spawn a projectile at the spawn point
 		ProjectileClass, 
 		Location, 
 		Rotation

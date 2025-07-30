@@ -24,6 +24,8 @@ public:
 	void HandleDestruction();
 
 	APlayerController* GetTankPlayerController() const { return TankPlayerController; } // Getter for the tank's player controller
+
+	bool bAlive = true; // Flag to check if the tank is alive
 	
 protected:
 	// Called when the game starts or when spawned
@@ -40,6 +42,12 @@ private:
 
 	UPROPERTY(EditAnywhere, category = "Movement")
 	float TurnRate = 45.0f; 
+
+	UPROPERTY(EditAnywhere, category = "Combat")
+	USoundBase* MovementSound; 
+
+	UPROPERTY(VisibleAnywhere, category = "Combat")
+	UAudioComponent* MovementAudioComponent; 
 
 	void Move(float Value);
 	void Turn(float Value); 
