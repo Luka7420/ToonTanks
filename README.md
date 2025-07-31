@@ -1,20 +1,20 @@
-🎮 Toon Tanks - UE5 C++ Project
+🎮 **Toon Tanks - UE5 C++ Project**
 Welcome to my take on the Toon Tanks mini-game — a fun, fast-paced project made with Unreal Engine 5 and C++. This project helped me dive into gameplay programming by building a simple tank shooter game, perfect for a game jam vibe or learning session.
 
 Throughout the project, I worked on:
 
-🕹️ Player-controlled tank movement (WASD + mouse)
+🕹️ **Player-controlled tank movement (WASD + mouse)**
 
-🎯 Turret rotation and firing mechanics
+🎯 **Turret rotation and firing mechanics**
 
-💥 Enemy AI with firing logic
+💥**Enemy AI with firing logic**
 
-💡 Damage systems and destruction
+💡 **Damage systems and destruction effects**
 
-🔊 Visual and audio effects (explosions, smoke, fire SFX)
+🔊 **Visual and audio effects (explosions, smoke, fire SFX)**
 
-🧱 HUD elements for win/lose states
+🧱 **HUD elements for win/lose states**
 
-🧃 Game feel improvements with VFX and sound
+🧃 **Game feel improvements with VFX and sound polis**
 
 All coded using C++ inside Unreal, not just Blueprints.
